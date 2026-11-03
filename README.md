@@ -22,18 +22,46 @@
 3. **代价明确**。每条规矩都意味着放弃某个东西（速度、字数、选项数）。说不出放弃什么，说明它其实没有约束力。这一栏记在 `docs/backlog.md` 的第四列，不写进 SKILL.md——写进去会被模型读成「允许补偿」
 4. **不解释动机**。道理写一句，剩下全是"怎么做"和"什么算做到"
 
-## 安装
+## 使用
+
+每个 skill 是 `skills/<name>/` 下的一个目录，入口是其中的 `SKILL.md`。"使用"就是把它装进 AI agent 的 skills 目录，agent 下一轮会话自动加载。
+
+### 方式一：skills CLI（推荐）
 
 ```bash
-# 全部装到当前项目
+# 装单个 skill 到当前项目（只对这个项目的会话生效）
+npx --yes skills add <owner>/dont-fuck-with-me -s terse
+
+# 装全部
 npx --yes skills add <owner>/dont-fuck-with-me --all
 
-# 或只装某几个
-npx --yes skills add <owner>/dont-fuck-with-me -s answer-first,no-guessing
-
-# 装到全局（所有项目都生效）
+# 装到全局（所有项目生效；terse 这类默认生效的行为规矩适合全局）
 npx --yes skills add <owner>/dont-fuck-with-me --all -g
 ```
+
+也接受本地路径，克隆后直接指向目录：
+
+```bash
+git clone <repo-url> && npx --yes skills add ./dont-fuck-with-me -s terse
+```
+
+### 方式二：纯 git + symlink（不需要 node）
+
+agent 的 skills 目录：项目级 `./.agents/skills/`，全局 `~/.agents/skills/`。把 skill 目录链进去即可：
+
+```bash
+mkdir -p ~/.agents/skills
+ln -s "$PWD/skills/terse" ~/.agents/skills/terse
+```
+
+### 验证与更新
+
+```bash
+npx --yes skills ls         # 查看已装的 skill
+npx --yes skills update -y  # 仓库有新提交后更新
+```
+
+装完在下一轮会话生效。`terse` 不需要唤起，开口它就该守；别的 skill 用描述里的原话触发。
 
 ## Skills
 
