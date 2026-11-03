@@ -39,7 +39,7 @@ fi
 
 # backlog：插到清单表表头之后
 if ! grep -q "^| .*\`$name\`" docs/backlog.md; then
-  awk -v line="| TODO | TODO | TODO | ✍️ \`$name\` |" '
+  awk -v line="| TODO | TODO | TODO | TODO | 在写 \`$name\` |" '
     { print }
     /^\| 规矩 \|/ { seen = 1 }
     seen && /^\| --- \|/ && !done { print line; done = 1 }

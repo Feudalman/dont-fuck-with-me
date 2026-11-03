@@ -56,14 +56,13 @@ for dir in $(skill_dirs); do
   [ -f "$file" ] || continue
   body=$(awk '/^---$/{c++; next} c>=2{print}' "$file")
 
-  for h in "规矩" "怎么做" "什么算没做到" "代价"; do
+  for h in "规矩" "怎么做" "什么算没做到"; do
     printf '%s\n' "$body" | grep -qx "## $h" || bad "$name: 缺 '## $h'"
   done
   printf '%s\n' "$body" | grep -q '^# ' || bad "$name: 缺一级标题"
-  printf '%s\n' "$body" | grep -qE '^## (背景|动机|原理|说明)' && bad "$name: 正文出现解释性章节"
-
+  printf '%s\n' "$body" | grep -qE '^## (背景|动机|原理|说明|代价)' && bad "$name: 正文出现解释性或代价章节"
   lines=$(printf '%s\n' "$body" | wc -l | tr -d ' ')
-  [ "$lines" -le 80 ] || bad "$name: 正文 $lines 行，超过 80 行上限（把细节移进 references/）"
+  [ "$lines" -le 60 ] || bad "$name: 正文 $lines 行，超过 60 行上限（把细节移进 references/）"
 
   # 占位符与未填项
   ph=$(grep -nE 'TODO|TBD|<neighbor>|<skill-name>|SKILL_NAME|示例文本' "$file" || true)
@@ -124,23 +123,33 @@ else
 fi
 
 section "backlog"
+before=$fail
 if [ ! -f docs/backlog.md ]; then
   bad "缺 docs/backlog.md"
 else
-  # backlog 里每个 ✅ 行必须点到一个真实 skill
-  for name in $(grep -E '✅' docs/backlog.md | grep -oE '`[a-z0-9-]+`' | tr -d '`' | sort -u); do
-    [ -d "skills/$name" ] || bad "backlog 标 ✅ 但 skills/$name 不存在"
+  # 每行四栏都得填满：规矩 / 触发场景 / 放弃什么 / 状态
+  col=$(awk -F'|' '
+    /^\| / && !/^\| 规矩 / && !/^\| --- / {
+      if (NF != 6) { printf("%d 行栏数不是 4（%d 段）\n", NR, NF); next }
+      for (i = 2; i <= 5; i++) {
+        v = $i; gsub(/^[ \t]+|[ \t]+$/, "", v)
+        if (v == "" || v == "TODO") printf("%d 行第 %d 栏没填\n", NR, i - 1)
+      }
+    }' docs/backlog.md)
+  if [ -n "$col" ]; then
+    printf '%s\n' "$col" | sed 's/^/        /'
+    bad "backlog 行未填满"
+  fi
+
+  for name in $(grep -E '已落地|在写' docs/backlog.md | grep -oE '`[a-z0-9-]+`' | tr -d '`' | sort -u); do
+    [ -d "skills/$name" ] || bad "backlog 标了 $name 但 skills/$name 不存在"
   done
-  # TODO 只允许出现在 backlog 的待办区，skill 已存在则不该还挂着 TODO 状态
-  for name in $(grep -E '^\| .*✍️ `[a-z0-9-]+`' docs/backlog.md | grep -oE '`[a-z0-9-]+`' | tr -d '`' | sort -u); do
-    [ -d "skills/$name" ] || bad "backlog 标 ✍️ 但 skills/$name 不存在"
-  done
-  # skills/ 里每个 skill 都必须在 backlog 出现过，否则是没走流程冒出来的
+
   for dir in $(skill_dirs); do
     name=$(basename "$dir")
     grep -q "\`$name\`" docs/backlog.md || bad "$name 未在 docs/backlog.md 登记"
   done
-  ok "backlog 与 skills/ 双向一致"
+  [ "$fail" -eq "$before" ] && ok "backlog 四栏填满，与 skills/ 双向一致"
 fi
 
 printf '\n'
