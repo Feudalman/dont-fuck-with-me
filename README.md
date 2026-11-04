@@ -35,7 +35,7 @@ npx --yes skills add <owner>/dont-fuck-with-me -s terse
 # 装全部
 npx --yes skills add <owner>/dont-fuck-with-me --all
 
-# 装到全局（所有项目生效；terse 这类默认生效的行为规矩适合全局）
+# 装到全局（所有项目生效；terse 这类行为规矩适合全局）
 npx --yes skills add <owner>/dont-fuck-with-me --all -g
 ```
 
@@ -61,13 +61,13 @@ npx --yes skills ls         # 查看已装的 skill
 npx --yes skills update -y  # 仓库有新提交后更新
 ```
 
-装完在下一轮会话生效。`terse` 不需要唤起，开口它就该守；别的 skill 用描述里的原话触发。
+装完在下一轮会话生效。`terse` 在复杂、多问或专业性强的问题上自动生效，简单问答和明确要发散的场合不管；别的 skill 用描述里的原话触发。
 
 ## Skills
 
 | Skill | 治什么 | 状态 |
 | --- | --- | --- |
-| `terse` | 回答的艺术：只答被问的、先给结论、不引新话题、不用黑话与记号 | ✅ |
+| `terse` | 复杂问题专注作答：被问什么答什么、先给结论、不发散、不用黑话与记号 | ✅ |
 
 > 表里没出现的规矩还在 `docs/backlog.md` 排队。
 
