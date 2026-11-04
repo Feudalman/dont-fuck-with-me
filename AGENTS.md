@@ -95,5 +95,6 @@ description: Use when ... Triggered by ... Not for ...
 
 - 一个 commit 一条规矩，或一次纯结构改动
 - message 用 `feat:` / `refine:` / `fix:` / `docs:` / `chore:` 前缀
+- 标题（message 第一行）写英文，一句话说清改了什么；正文用中文，写为什么
 - 改 skill 一律先改、跑 `check`、把 diff 摆出来等审，我回一句「提交」再提交。不审不提交，也不推
 - 提交前 `./scripts/check.sh` 必须全绿
