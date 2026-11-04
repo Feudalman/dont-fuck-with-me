@@ -1,6 +1,6 @@
 ---
 name: SKILL_NAME
-description: Use when ... Triggered by "原话一", "原话二". Not for ... -> 交给 SKILL_NEIGHBOR.
+description: Use when ... Triggered by "原话一", "原话二". Not for ...
 ---
 
 # SKILL_TITLE

@@ -25,7 +25,7 @@ mkdir -p "skills/$name"
 
 title=$(printf '%s' "$name" | awk -F- '{for (i = 1; i <= NF; i++) printf "%s%s", toupper(substr($i,1,1)), substr($i,2), (i < NF ? " " : "")}')
 
-sed "s/SKILL_NAME/$name/g; s/SKILL_TITLE/$title/g; s/SKILL_NEIGHBOR/<neighbor>/g" \
+sed "s/SKILL_NAME/$name/g; s/SKILL_TITLE/$title/g;" \
   templates/SKILL.md > "skills/$name/SKILL.md"
 
 # README 表：插到表头下一行之后
