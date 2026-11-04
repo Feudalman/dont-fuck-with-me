@@ -95,4 +95,5 @@ description: Use when ... Triggered by ... Not for ...
 
 - 一个 commit 一条规矩，或一次纯结构改动
 - message 用 `feat:` / `refine:` / `fix:` / `docs:` / `chore:` 前缀
+- 改 skill 一律先改、跑 `check`、把 diff 摆出来等审，我回一句「提交」再提交。不审不提交，也不推
 - 提交前 `./scripts/check.sh` 必须全绿
