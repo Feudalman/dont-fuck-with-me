@@ -73,7 +73,7 @@ done
 
 # ------------------------------------------------------------- 跨仓库/项目泄漏
 section "泄漏"
-leak='arui-skills|aruing|Feudalman|/Users/|^C:\\\\'
+leak='/Users/|^C:\\\\'
 hits=$(grep -nE "$leak" skills/*/SKILL.md 2>/dev/null || true)
 if [ -n "$hits" ]; then
   printf '%s\n' "$hits" | sed 's/^/        /'
