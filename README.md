@@ -1,87 +1,89 @@
 # dont-fuck-with-me
 
-日常和 AI 一起干活时，我反复要说第二遍的那些话。
+English | [中文](README.zh.md)
 
-每说一次出口是浪费时间；写成 skill 是一次投入、每次生效。这个仓库只装这一类东西：**不依赖具体项目、在任何一次对话里都该成立的规矩**。
+The things I keep having to say a second time when working with AI.
 
-## 一条 skill 的准入门槛
+Every repetition is wasted breath; a skill is written once and applies every time. This repo holds exactly one kind of thing: **rules that do not depend on any specific project and should hold in any conversation.**
 
-1. **换一个项目、换一个 AI、只聊五分钟，它还成立。** 不成立就不是这个仓库的东西
-2. **它治的是我重复说过的话**，不是“业界最佳实践”
-3. **能判真假**。合格的规矩能被人指着一次具体输出说"这里违反了"；"要专业、要好"不行
-4. **代价明确**。每条规矩都意味着放弃某个东西（速度、字数、选项数）。说不出放弃什么，说明它其实没有约束力。这一栏记在 `docs/backlog.md` 的第四列，不写进 SKILL.md——写进去会被模型读成「允许补偿」
-5. **不解释动机**。道理写一句，剩下全是"怎么做"和"什么算做到"
+## What gets in
 
-## 使用
+1. **Swap the project, swap the AI, talk for five minutes — it still holds.** If it doesn't, it doesn't belong here
+2. **It fixes something I have already repeated**, not "industry best practice"
+3. **It can be judged true or false.** A good rule lets me point at one concrete output and say "this violates it"; "be professional, be good" cannot
+4. **The cost is named.** Every rule gives something up (speed, word count, number of options). If you cannot name what it gives up, it has no binding force. That column lives in `docs/backlog.md`, not in SKILL.md — written into a skill, a model reads it as "compensation is allowed"
+5. **No motive lectures.** One sentence of reasoning; the rest is "how to do it" and "what counts as missing"
 
-每个 skill 是 `skills/<name>/` 下的一个目录，入口是其中的 `SKILL.md`。"使用"就是把它装进 AI agent 的 skills 目录，agent 下一轮会话自动加载。
+## Usage
 
-### 方式一：skills CLI（推荐）
+Each skill is a directory under `skills/<name>/`, entered through its `SKILL.md`. "Using" a skill means installing it into an AI agent's skills directory, where the agent picks it up in the next session.
+
+### Option 1: skills CLI (recommended)
 
 ```bash
-# 装单个 skill 到当前项目（只对这个项目的会话生效）
+# one skill into the current project (applies to that project's sessions only)
 npx --yes skills add <owner>/dont-fuck-with-me -s terse
 
-# 装全部
+# all of them
 npx --yes skills add <owner>/dont-fuck-with-me --all
 
-# 装到全局（所有项目生效；terse 这类行为规矩适合全局）
+# install globally (applies everywhere; behavioural rules like terse belong here)
 npx --yes skills add <owner>/dont-fuck-with-me --all -g
 ```
 
-也接受本地路径，克隆后直接指向目录：
+Local paths work too — clone, then point at the directory:
 
 ```bash
 git clone <repo-url> && npx --yes skills add ./dont-fuck-with-me -s terse
 ```
 
-### 方式二：纯 git + symlink（不需要 node）
+### Option 2: plain git + symlink (no node needed)
 
-agent 的 skills 目录：项目级 `./.agents/skills/`，全局 `~/.agents/skills/`。把 skill 目录链进去即可：
+An agent's skills directory is `./.agents/skills/` per project and `~/.agents/skills/` globally. Link a skill directory into it:
 
 ```bash
 mkdir -p ~/.agents/skills
 ln -s "$PWD/skills/terse" ~/.agents/skills/terse
 ```
 
-### 验证与更新
+### Checking and updating
 
 ```bash
-npx --yes skills ls         # 查看已装的 skill
-npx --yes skills update -y  # 仓库有新提交后更新
+npx --yes skills ls         # list installed skills
+npx --yes skills update -y  # update after new commits land here
 ```
 
-装完在下一轮会话生效。`terse` 在复杂、多问或专业性强的问题上自动生效，简单问答和明确要发散的场合不管；别的 skill 用描述里的原话触发。
+Changes take effect in the next session. `terse` activates on complex, multi-part, or highly technical questions; it stays out of simple Q&A and of requests that explicitly want to roam. The other skills trigger on the literal phrases in their descriptions.
 
 ## Skills
 
-| Skill | 治什么 | 状态 |
+| Skill | What it governs | State |
 | --- | --- | --- |
-| `table-or-list` | 先选对载体再装内容：属性同类且说得完才用表格，装不下就换列表，不压缩不丢信息 | ✅ |
-| `batch-then-focus` | 多条交付先给全貌清单，细节一轮一件：读者随时知道一共几件、自己在第几件 | ✅ |
-| `re-explain` | 被说看不懂时先动能让其余卡点自己消失的那一层；要同时动三层以上就重写，不缝补 | ✅ |
-| `lean-docs` | 留下的文档一个事实只有一个出处，改就改原处；用不上的内容一处也不留，每段读一遍就懂 | ✅ |
-| `ask-before-extra` | 只做指令点名的动作，没点名的先问再做：改到哪、提不提交、推不推送都有边界 | ✅ |
-| `terse` | 复杂问题专注作答：被问什么答什么、先给结论、不发散、不用黑话与记号 | ✅ |
+| `table-or-list` | Pick the right carrier before pouring content in: a table only when the attributes are uniform and fit, a list otherwise — never compress or drop information | ✅ |
+| `batch-then-focus` | For multi-item deliveries, give a scan-complete list first, then one item per round: the reader always knows how many there are and which one they are on | ✅ |
+| `re-explain` | When told "I don't follow", move only the layer that makes the other blockers disappear; three or more layers means rewrite, not patch | ✅ |
+| `lean-docs` | In any document one fact has one home, and edits go to that home; nothing unusable stays, and every paragraph reads complete once | ✅ |
+| `ask-before-extra` | Do only the actions the instruction named; ask before anything else — how far to change, whether to commit, whether to push, all have edges | ✅ |
+| `terse` | On complex questions, stay on the question asked, lead with the answer, do not sprawl, drop jargon and ornaments | ✅ |
 
-> 表里没出现的规矩还在 `docs/backlog.md` 排队。
+> Rules not in this table are still queued in `docs/backlog.md`.
 
-## 仓库结构
+## Layout
 
 ```
-AGENTS.md              本仓库的 agent 工作约定（改仓库前先读）
-skills/<name>/         SKILL.md + 按需 references/ examples/
-templates/SKILL.md     新 skill 的骨架
-scripts/new-skill.sh   脚手架：建目录、生成 frontmatter、登记 README 与 backlog
-scripts/check.sh       合并闸门，本地唯一验收命令
-docs/backlog.md        待沉淀清单，规矩的唯一入口
+AGENTS.md              working agreement for agents in this repo (read before editing)
+skills/<name>/         SKILL.md plus references/ examples/ as needed
+templates/SKILL.md      skeleton for a new skill
+scripts/new-skill.sh    scaffold: creates the directory, frontmatter, README and backlog rows
+scripts/check.sh        merge gate, the only local acceptance command
+docs/backlog.md        queue of pending rules, the sole entry point
 ```
 
-## 开发
+## Development
 
 ```bash
-./scripts/new-skill.sh answer-first     # 新建
-./scripts/check.sh                      # 验收，提交前必跑
+./scripts/new-skill.sh answer-first     # create
+./scripts/check.sh                      # acceptance, always before committing
 ```
 
-新增或修改的规矩先写进 `docs/backlog.md`，再落 skill。check 会校验 backlog、README 表、`skills/` 三者互相对得上。
+Write the rule into `docs/backlog.md` first, then turn it into a skill. `check` verifies that the backlog, the README table, and `skills/` all agree.
